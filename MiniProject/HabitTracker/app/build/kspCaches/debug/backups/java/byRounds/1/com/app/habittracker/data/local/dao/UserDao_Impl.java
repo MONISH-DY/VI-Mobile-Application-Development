@@ -8,12 +8,14 @@ import androidx.room.CoroutinesRoom;
 import androidx.room.EntityDeletionOrUpdateAdapter;
 import androidx.room.EntityInsertionAdapter;
 import androidx.room.RoomDatabase;
+import androidx.room.RoomDatabaseKt;
 import androidx.room.RoomSQLiteQuery;
 import androidx.room.SharedSQLiteStatement;
 import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
 import androidx.sqlite.db.SupportSQLiteStatement;
 import com.app.habittracker.data.local.entities.UserEntity;
+import com.app.habittracker.data.local.entities.XPHistoryEntity;
 import java.lang.Class;
 import java.lang.Exception;
 import java.lang.Object;
@@ -35,6 +37,8 @@ public final class UserDao_Impl implements UserDao {
 
   private final EntityInsertionAdapter<UserEntity> __insertionAdapterOfUserEntity;
 
+  private final EntityInsertionAdapter<XPHistoryEntity> __insertionAdapterOfXPHistoryEntity;
+
   private final EntityDeletionOrUpdateAdapter<UserEntity> __updateAdapterOfUserEntity;
 
   private final SharedSQLiteStatement __preparedStmtOfIncrementXP;
@@ -46,6 +50,8 @@ public final class UserDao_Impl implements UserDao {
   private final SharedSQLiteStatement __preparedStmtOfUpdateSkin;
 
   private final SharedSQLiteStatement __preparedStmtOfUpdateProfileSettings;
+
+  private final SharedSQLiteStatement __preparedStmtOfDeleteOldXPHistory;
 
   public UserDao_Impl(@NonNull final RoomDatabase __db) {
     this.__db = __db;
@@ -72,6 +78,23 @@ public final class UserDao_Impl implements UserDao {
         statement.bindLong(11, entity.getLastHabitCompletionTime());
         statement.bindLong(12, entity.getActiveXpBoostUntil());
         statement.bindString(13, entity.getCurrentSparkySkin());
+      }
+    };
+    this.__insertionAdapterOfXPHistoryEntity = new EntityInsertionAdapter<XPHistoryEntity>(__db) {
+      @Override
+      @NonNull
+      protected String createQuery() {
+        return "INSERT OR REPLACE INTO `xp_history` (`id`,`userId`,`amount`,`reason`,`timestamp`) VALUES (nullif(?, 0),?,?,?,?)";
+      }
+
+      @Override
+      protected void bind(@NonNull final SupportSQLiteStatement statement,
+          @NonNull final XPHistoryEntity entity) {
+        statement.bindLong(1, entity.getId());
+        statement.bindString(2, entity.getUserId());
+        statement.bindLong(3, entity.getAmount());
+        statement.bindString(4, entity.getReason());
+        statement.bindLong(5, entity.getTimestamp());
       }
     };
     this.__updateAdapterOfUserEntity = new EntityDeletionOrUpdateAdapter<UserEntity>(__db) {
@@ -140,6 +163,14 @@ public final class UserDao_Impl implements UserDao {
         return _query;
       }
     };
+    this.__preparedStmtOfDeleteOldXPHistory = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "DELETE FROM xp_history WHERE userId = ? AND id NOT IN (SELECT id FROM xp_history WHERE userId = ? ORDER BY timestamp DESC LIMIT 50)";
+        return _query;
+      }
+    };
   }
 
   @Override
@@ -151,6 +182,25 @@ public final class UserDao_Impl implements UserDao {
         __db.beginTransaction();
         try {
           __insertionAdapterOfUserEntity.insert(user);
+          __db.setTransactionSuccessful();
+          return Unit.INSTANCE;
+        } finally {
+          __db.endTransaction();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object insertXPHistory(final XPHistoryEntity history,
+      final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        __db.beginTransaction();
+        try {
+          __insertionAdapterOfXPHistoryEntity.insert(history);
           __db.setTransactionSuccessful();
           return Unit.INSTANCE;
         } finally {
@@ -176,6 +226,12 @@ public final class UserDao_Impl implements UserDao {
         }
       }
     }, $completion);
+  }
+
+  @Override
+  public Object addXPWithHistory(final String userId, final int amount, final String reason,
+      final Continuation<? super Unit> $completion) {
+    return RoomDatabaseKt.withTransaction(__db, (__cont) -> UserDao.DefaultImpls.addXPWithHistory(UserDao_Impl.this, userId, amount, reason, __cont), $completion);
   }
 
   @Override
@@ -318,6 +374,34 @@ public final class UserDao_Impl implements UserDao {
           }
         } finally {
           __preparedStmtOfUpdateProfileSettings.release(_stmt);
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object deleteOldXPHistory(final String userId,
+      final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteOldXPHistory.acquire();
+        int _argIndex = 1;
+        _stmt.bindString(_argIndex, userId);
+        _argIndex = 2;
+        _stmt.bindString(_argIndex, userId);
+        try {
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfDeleteOldXPHistory.release(_stmt);
         }
       }
     }, $completion);

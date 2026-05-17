@@ -47,7 +47,7 @@ fun LoginScreen(
                 )
                 
                 Text(
-                    text = if (uiState.isLoginMode) "Log in to your Phoenix Spark account" else "Start your legendary journey today",
+                    text = if (uiState.isLoginMode) "Log in to your HabitPulse account" else "Start your legendary journey today",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                     modifier = Modifier.padding(bottom = 32.dp)

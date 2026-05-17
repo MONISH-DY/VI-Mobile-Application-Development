@@ -1,5 +1,6 @@
 package com.app.habittracker.presentation.achievements
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -13,18 +14,23 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.habittracker.data.local.entities.AchievementEntity
+import com.app.habittracker.presentation.common.AtmosphereBackground
+import com.app.habittracker.ui.theme.getAppBorderColor
+import java.text.SimpleDateFormat
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,9 +40,6 @@ fun AchievementsScreen(
 ) {
     val achievements by viewModel.achievements.collectAsState()
     val sortedAchievements = achievements.sortedByDescending { it.isUnlocked }
-
-    var isRefreshing by androidx.compose.runtime.mutableStateOf(false)
-    val scope = androidx.compose.runtime.rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -48,8 +51,8 @@ fun AchievementsScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = viewModel::seedDummyAchievements) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Seed Achievements")
+                    IconButton(onClick = viewModel::refreshSync) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Refresh Achievements")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -60,7 +63,7 @@ fun AchievementsScreen(
         },
         containerColor = Color.Transparent
     ) { padding ->
-        com.app.habittracker.presentation.common.AtmosphereBackground {
+        AtmosphereBackground {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -117,26 +120,26 @@ fun AchievementCard(achievement: AchievementEntity) {
             .clip(RoundedCornerShape(24.dp))
             .background(
                 if (isUnlocked)
-                    androidx.compose.ui.graphics.Brush.linearGradient(
+                    Brush.linearGradient(
                         listOf(
                             MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
                             MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f)
                         )
                     )
                 else
-                    androidx.compose.ui.graphics.Brush.linearGradient(
+                    Brush.linearGradient(
                         listOf(Color.Gray.copy(alpha = 0.1f), Color.Gray.copy(alpha = 0.05f))
                     )
             )
             .then(
                 if (isUnlocked) Modifier.border(
                     1.dp,
-                    com.app.habittracker.ui.theme.getAppBorderColor(),
+                    getAppBorderColor(),
                     RoundedCornerShape(24.dp)
                 )
                 else Modifier.border(
                     1.dp,
-                    com.app.habittracker.ui.theme.getAppBorderColor().copy(alpha = 0.5f),
+                    getAppBorderColor().copy(alpha = 0.5f),
                     RoundedCornerShape(24.dp)
                 )
             )
@@ -164,11 +167,11 @@ fun AchievementCard(achievement: AchievementEntity) {
 
                 if (isUnlocked) {
                     // Subtle glowing ring
-                    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+                    Canvas(modifier = Modifier.fillMaxSize()) {
                         drawCircle(
                             color = Color(0xFFFFD700),
                             radius = size.minDimension / 2,
-                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx())
+                            style = Stroke(width = 2.dp.toPx())
                         )
                     }
                 }
@@ -196,11 +199,9 @@ fun AchievementCard(achievement: AchievementEntity) {
 
             if (isUnlocked && (achievement.unlockedAt ?: 0) > 0) {
                 Spacer(modifier = Modifier.height(12.dp))
+                val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
                 Text(
-                    text = java.text.SimpleDateFormat(
-                        "MMM dd, yyyy",
-                        java.util.Locale.getDefault()
-                    ).format(java.util.Date(achievement.unlockedAt ?: 0)),
+                    text = dateFormat.format(Date(achievement.unlockedAt ?: 0)),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                     fontSize = 10.sp

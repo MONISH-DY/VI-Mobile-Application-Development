@@ -42,4 +42,19 @@ object TimeUtils {
         val target24 = formatTo24h(target)
         return current24 > target24
     }
+
+    fun getUtcDateString(timestamp: Long = System.currentTimeMillis()): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+        sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
+        return sdf.format(java.util.Date(timestamp))
+    }
+
+    fun getUtcTimestamp(): Long {
+        return System.currentTimeMillis()
+    }
+
+    fun getCurrentTime24h(): String {
+        val sdf = SimpleDateFormat("HH:mm", Locale.ENGLISH)
+        return sdf.format(java.util.Date())
+    }
 }

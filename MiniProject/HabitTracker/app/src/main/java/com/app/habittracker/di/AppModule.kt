@@ -43,17 +43,17 @@ object AppModule {
                 super.onCreate(db)
                 // Initialize default achievements
                 val initialAchievements = listOf(
-                    "('First Habit', 'Complete your very first habit!', '⭐', 0, 0)",
-                    "('7 Day Streak', 'Maintain a habit for a full week!', '🔥', 0, 0)",
-                    "('Elite Streak', 'Maintain a habit for 30 days!', '👑', 0, 0)",
-                    "('Level 5', 'Reach Level 5!', '🎖️', 0, 0)",
-                    "('Level 10', 'Reach Level 10!', '🌟', 0, 0)",
-                    "('Level 20', 'Reach Level 20!', '💎', 0, 0)",
-                    "('Level 50', 'Reach Level 50!', '🚀', 0, 0)",
-                    "('Boss Slayer', 'Defeat your first Boss Battle!', '⚔️', 0, 0)"
+                    "('', 'First Habit', 'Complete your very first habit!', '⭐', 0, 0)",
+                    "('', '7 Day Streak', 'Maintain a habit for a full week!', '🔥', 0, 0)",
+                    "('', 'Elite Streak', 'Maintain a habit for 30 days!', '👑', 0, 0)",
+                    "('', 'Level 5', 'Reach Level 5!', '🎖️', 0, 0)",
+                    "('', 'Level 10', 'Reach Level 10!', '🌟', 0, 0)",
+                    "('', 'Level 20', 'Reach Level 20!', '💎', 0, 0)",
+                    "('', 'Level 50', 'Reach Level 50!', '🚀', 0, 0)",
+                    "('', 'Boss Slayer', 'Defeat your first Boss Battle!', '⚔️', 0, 0)"
                 )
                 initialAchievements.forEach { values ->
-                    db.execSQL("INSERT INTO achievements (title, description, icon, isUnlocked, unlockedAt) VALUES $values")
+                    db.execSQL("INSERT INTO achievements (userId, title, description, icon, isUnlocked, unlockedAt) VALUES $values")
                 }
             }
         })

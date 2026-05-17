@@ -209,8 +209,7 @@ class DashboardViewModel @Inject constructor(
             val updatedHabit = habit.copy(isCompletedToday = true, streak = habit.streak + 1)
             habitRepository.updateHabit(updatedHabit)
             
-            val calendar = java.util.Calendar.getInstance()
-            val dateStr = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.ENGLISH).format(calendar.time)
+            val dateStr = com.app.habittracker.util.TimeUtils.getUtcDateString()
             habitRepository.logHabitCompletion(habit.id, dateStr, true)
             
             val xp = gamificationEngine.completeHabit(updatedHabit)
@@ -274,7 +273,7 @@ class DashboardViewModel @Inject constructor(
                         gamificationEngine.awardXP(-finalPenalty, "Missed: ${habit.title}${if (multiplier > 1) " (ENRAGED BOSS)" else ""}")
                         habitRepository.updateHabit(habit.copy(isMissedToday = true, streak = 0))
                         
-                        val dateStr = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.ENGLISH).format(calendar.time)
+                        val dateStr = com.app.habittracker.util.TimeUtils.getUtcDateString()
                         habitRepository.logHabitCompletion(habit.id, dateStr, false)
                         
                         // If user misses a habit and a boss is active, it becomes enraged!

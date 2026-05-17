@@ -7,6 +7,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.app.habittracker.data.local.entities.HabitEntity
+import com.app.habittracker.data.local.entities.HabitHistoryEntity
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -43,4 +45,42 @@ interface HabitDao {
 
     @Query("UPDATE habits SET streak = streak + :amount WHERE userId = :userId")
     suspend fun incrementAllStreaks(userId: String, amount: Int)
+
+    // --- Atomic History Operations ---
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertHabitHistory(history: HabitHistoryEntity)
+
+    @Query("SELECT * FROM habit_history WHERE userId = :userId AND dateStr = :dateStr AND habitId = :habitId LIMIT 1")
+    suspend fun getHistoryRecord(userId: String, dateStr: String, habitId: Int): HabitHistoryEntity?
+
+    @Transaction
+    suspend fun logHabitCompletionAtomic(
+        userId: String, 
+        habitId: Int, 
+        dateStr: String, 
+        isCompleted: Boolean,
+        updateHabitStreak: Boolean = false
+    ) {
+        val existing = getHistoryRecord(userId, dateStr, habitId)
+        if (existing != null) {
+            insertHabitHistory(existing.copy(isCompleted = isCompleted))
+        } else {
+            insertHabitHistory(
+                HabitHistoryEntity(
+                    userId = userId,
+                    habitId = habitId,
+                    dateStr = dateStr,
+                    isCompleted = isCompleted
+                )
+            )
+        }
+
+        if (updateHabitStreak) {
+            val habit = getHabitById(habitId)
+            if (habit != null) {
+                val newStreak = if (isCompleted) habit.streak + 1 else 0
+                updateHabit(habit.copy(isCompletedToday = isCompleted, streak = newStreak))
+            }
+        }
+    }
 }

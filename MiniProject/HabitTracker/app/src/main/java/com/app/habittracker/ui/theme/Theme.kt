@@ -80,7 +80,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun HabitTrackerTheme(
+fun HabitPulseTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,

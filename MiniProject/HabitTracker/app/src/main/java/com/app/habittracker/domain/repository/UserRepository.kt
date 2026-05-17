@@ -4,10 +4,12 @@ import com.app.habittracker.data.local.dao.UserDao
 import com.app.habittracker.data.local.dao.XPHistoryDao
 import com.app.habittracker.data.local.entities.UserEntity
 import com.app.habittracker.data.local.entities.XPHistoryEntity
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Singleton
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
@@ -29,10 +31,8 @@ class UserRepository @Inject constructor(
     }
 
     suspend fun addXP(amount: Int, reason: String) {
-        val userId = kotlinx.coroutines.runBlocking { currentUserIdFlow.first() } ?: return
-        userDao.incrementXP(userId, amount)
-        xpHistoryDao.insertHistory(XPHistoryEntity(userId = userId, amount = amount, reason = reason))
-        xpHistoryDao.deleteOldHistory(userId)
+        val userId = currentUserIdFlow.first() ?: return
+        userDao.addXPWithHistory(userId, amount, reason)
     }
 
     suspend fun updateLevel(newLevel: Int) {

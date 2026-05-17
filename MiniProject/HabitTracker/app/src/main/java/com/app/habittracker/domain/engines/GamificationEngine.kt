@@ -148,6 +148,7 @@ class GamificationEngine @Inject constructor(
 
     suspend fun syncAchievements() {
         val user = userRepository.getUser().firstOrNull() ?: return
+        achievementRepository.initializeDefaultAchievements(user.id)
         checkMilestoneBadges(user.currentLevel)
     }
 
@@ -186,7 +187,14 @@ class GamificationEngine @Inject constructor(
     val habitEvolutionEvent: SharedFlow<HabitEntity> = _habitEvolutionEvent.asSharedFlow()
 
     suspend fun unlockAchievement(badgeTitle: String): Boolean {
-        val achievements = achievementRepository.getAllAchievements().firstOrNull() ?: return false
+        val user = userRepository.getUser().firstOrNull() ?: return false
+        var achievements = achievementRepository.getAllAchievements().firstOrNull() ?: emptyList()
+        
+        if (achievements.isEmpty()) {
+            achievementRepository.initializeDefaultAchievements(user.id)
+            achievements = achievementRepository.getAllAchievements().firstOrNull() ?: emptyList()
+        }
+
         val achievement = achievements.find { it.title == badgeTitle }
         
         if (achievement != null && !achievement.isUnlocked) {

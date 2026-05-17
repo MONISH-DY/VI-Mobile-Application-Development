@@ -2,10 +2,12 @@ package com.app.habittracker.domain.repository
 
 import com.app.habittracker.data.local.dao.BossBattleDao
 import com.app.habittracker.data.local.entities.BossBattleEntity
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Singleton
 class BossBattleRepository @Inject constructor(
     private val bossBattleDao: BossBattleDao,

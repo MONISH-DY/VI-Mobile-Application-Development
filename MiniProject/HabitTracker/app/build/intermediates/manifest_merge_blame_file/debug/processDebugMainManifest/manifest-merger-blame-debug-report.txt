@@ -43,8 +43,8 @@
 24
 25    <application
 25-->D:\VI\MAD\MiniProject\HabitTracker\app\src\main\AndroidManifest.xml:10:5-48:19
-26        android:name="com.app.habittracker.HabitTrackerApplication"
-26-->D:\VI\MAD\MiniProject\HabitTracker\app\src\main\AndroidManifest.xml:11:9-48
+26        android:name="com.app.habittracker.HabitPulseApplication"
+26-->D:\VI\MAD\MiniProject\HabitTracker\app\src\main\AndroidManifest.xml:11:9-46
 27        android:allowBackup="true"
 27-->D:\VI\MAD\MiniProject\HabitTracker\app\src\main\AndroidManifest.xml:12:9-35
 28        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -64,16 +64,16 @@
 36        android:supportsRtl="true"
 36-->D:\VI\MAD\MiniProject\HabitTracker\app\src\main\AndroidManifest.xml:18:9-35
 37        android:testOnly="true"
-38        android:theme="@style/Theme.HabitTracker" >
-38-->D:\VI\MAD\MiniProject\HabitTracker\app\src\main\AndroidManifest.xml:19:9-50
+38        android:theme="@style/Theme.HabitPulse" >
+38-->D:\VI\MAD\MiniProject\HabitTracker\app\src\main\AndroidManifest.xml:19:9-48
 39        <activity
 39-->D:\VI\MAD\MiniProject\HabitTracker\app\src\main\AndroidManifest.xml:22:9-30:20
 40            android:name="com.app.habittracker.MainActivity"
 40-->D:\VI\MAD\MiniProject\HabitTracker\app\src\main\AndroidManifest.xml:23:13-41
 41            android:exported="true"
 41-->D:\VI\MAD\MiniProject\HabitTracker\app\src\main\AndroidManifest.xml:24:13-36
-42            android:theme="@style/Theme.HabitTracker" >
-42-->D:\VI\MAD\MiniProject\HabitTracker\app\src\main\AndroidManifest.xml:25:13-54
+42            android:theme="@style/Theme.HabitPulse" >
+42-->D:\VI\MAD\MiniProject\HabitTracker\app\src\main\AndroidManifest.xml:25:13-52
 43            <intent-filter>
 43-->D:\VI\MAD\MiniProject\HabitTracker\app\src\main\AndroidManifest.xml:26:13-29:29
 44                <action android:name="android.intent.action.MAIN" />

@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import dagger.hilt.android.AndroidEntryPoint
-import com.app.habittracker.ui.theme.HabitTrackerTheme
+import com.app.habittracker.ui.theme.HabitPulseTheme
 import com.app.habittracker.data.local.PreferencesManager
 import javax.inject.Inject
 
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val isDarkTheme by preferencesManager.isDarkMode.collectAsState(initial = true)
-            HabitTrackerTheme(darkTheme = isDarkTheme) {
+            HabitPulseTheme(darkTheme = isDarkTheme) {
                 com.app.habittracker.navigation.NavGraph()
             }
         }

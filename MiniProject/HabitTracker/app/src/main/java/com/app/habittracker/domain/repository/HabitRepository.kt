@@ -4,10 +4,12 @@ import com.app.habittracker.data.local.dao.HabitDao
 import com.app.habittracker.data.local.dao.HabitHistoryDao
 import com.app.habittracker.data.local.entities.HabitEntity
 import com.app.habittracker.data.local.entities.HabitHistoryEntity
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Singleton
 class HabitRepository @Inject constructor(
     private val habitDao: HabitDao,
@@ -70,19 +72,7 @@ class HabitRepository @Inject constructor(
 
     suspend fun logHabitCompletion(habitId: Int, dateStr: String, isCompleted: Boolean) {
         val userId = currentUserIdFlow.first() ?: return
-        val existing = habitHistoryDao.getHistoryRecord(userId, dateStr, habitId)
-        if (existing != null) {
-            habitHistoryDao.insertHistory(existing.copy(isCompleted = isCompleted))
-        } else {
-            habitHistoryDao.insertHistory(
-                HabitHistoryEntity(
-                    userId = userId,
-                    habitId = habitId,
-                    dateStr = dateStr,
-                    isCompleted = isCompleted
-                )
-            )
-        }
+        habitDao.logHabitCompletionAtomic(userId, habitId, dateStr, isCompleted)
     }
 
     suspend fun restoreHabitStreaks(amount: Int) {

@@ -48,7 +48,7 @@ class DailyResetWorker @AssistedInject constructor(
             val newHighest = maxOf(user.highestStreak, newStreak)
             userRepository.updateUser(user.copy(currentStreak = newStreak, highestStreak = newHighest))
 
-            val yesterdayDateStr = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(calendarYesterday.time)
+            val yesterdayDateStr = com.app.habittracker.util.TimeUtils.getUtcDateString(calendarYesterday.timeInMillis)
             
             // Reset individual habit streaks only if they were DUE yesterday and MISSED
             habits.forEach { habit ->

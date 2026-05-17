@@ -26,8 +26,7 @@ class DailyQuestsViewModel @Inject constructor(
         .map { quests ->
             if (quests.isEmpty()) return@map emptyList<QuestEntity>()
             
-            val calendar = java.util.Calendar.getInstance()
-            val currentTime = java.text.SimpleDateFormat("HH:mm", java.util.Locale.ENGLISH).format(calendar.time)
+            val currentTime = com.app.habittracker.util.TimeUtils.getCurrentTime24h()
             
             quests.map { quest ->
                 if (!quest.isCompleted && !quest.isMissed && quest.endTime.isNotEmpty() && currentTime > quest.endTime) {
@@ -128,8 +127,7 @@ class DailyQuestsViewModel @Inject constructor(
 
     private fun checkExpirations() {
         viewModelScope.launch {
-            val calendar = java.util.Calendar.getInstance()
-            val currentTime = java.text.SimpleDateFormat("HH:mm", java.util.Locale.ENGLISH).format(calendar.time)
+            val currentTime = com.app.habittracker.util.TimeUtils.getCurrentTime24h()
 
             val quests = questRepository.getAllQuests().first()
             quests.forEach { quest ->

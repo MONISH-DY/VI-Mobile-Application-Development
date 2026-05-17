@@ -170,7 +170,7 @@ fun DashboardTopBar(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 UniqueBrandLogo(size = 32.dp)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Phoenix Spark", fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onSurface)
+                Text("HabitPulse", fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onSurface)
             }
         },
         actions = {

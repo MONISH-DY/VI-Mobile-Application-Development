@@ -2,10 +2,12 @@ package com.app.habittracker.domain.repository
 
 import com.app.habittracker.data.local.dao.QuestDao
 import com.app.habittracker.data.local.entities.QuestEntity
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Singleton
 class QuestRepository @Inject constructor(
     private val questDao: QuestDao,

@@ -23,7 +23,7 @@
     <uses-permission android:name="com.app.habittracker.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
 
     <application
-        android:name="com.app.habittracker.HabitTrackerApplication"
+        android:name="com.app.habittracker.HabitPulseApplication"
         android:allowBackup="true"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -35,11 +35,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:testOnly="true"
-        android:theme="@style/Theme.HabitTracker" >
+        android:theme="@style/Theme.HabitPulse" >
         <activity
             android:name="com.app.habittracker.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.HabitTracker" >
+            android:theme="@style/Theme.HabitPulse" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
